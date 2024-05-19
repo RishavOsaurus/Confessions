@@ -95,5 +95,6 @@ mysqli_close($connection);
     </div>
   </form>
   <script src="../javaScript/script.js"></script>
+  <?php include ("footer.php"); ?>
 </body>
 </html>

@@ -119,6 +119,7 @@ $GLOBALS['username'] = "";
 			</div>
 		<?php } ?>
 	</main>
+	<?php include ("footer.php"); ?>
 </body>
 
 </html>

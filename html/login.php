@@ -93,6 +93,7 @@ if (isset($_SESSION['email'])) {
   ?>
 
   <script src="../javaScript/script.js"></script>
+  <?php include("footer.php"); ?>
 </body>
 
 </html>
