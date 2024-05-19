@@ -9,7 +9,9 @@ $dbname     = "id22184385_confessions";
 try {
     $connection = new mysqli($servername, $uname, $pass);
 
-    $sqlCreateDatabase = "CREATE DATABASE IF NOT EXISTS $dbname";
+    $sqlCreateDatabase = "CREATE DATABASE IF NOT EXISTS $dbname
+CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_unicode_ci;";
     if ($connection->query($sqlCreateDatabase) === FALSE) {
         die("Error creating database: " . $connection->error);
     }
@@ -20,7 +22,9 @@ try {
     username VARCHAR(30) PRIMARY KEY,
     email VARCHAR(30),
     pass VARCHAR(255)
-    )";
+    )
+    CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_unicode_ci;";
 
     if ($connection->query($sqlCreateUsersTable) === FALSE) {
         die("Error creating table 'users': " . $connection->error);
@@ -38,7 +42,7 @@ try {
 
 
     if ($connection->query($sqlCreateConfessionsTable) === FALSE) {
-        throw(new Exception("Error creating table 'confessions': " . $connection->error));
+        throw (new Exception("Error creating table 'confessions': " . $connection->error));
     }
 
 

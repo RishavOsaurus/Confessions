@@ -4,8 +4,9 @@ session_start();
 if (isset($_SESSION['email'])) {
 	$email = $_SESSION['email'];
 }
-$GLOBALS['username'] = ""
-	?>
+$GLOBALS['username'] = "";
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,72 +26,86 @@ $GLOBALS['username'] = ""
 </head>
 
 <body>
-	<?php include "navbar.php" ?>
+	<?php include "navbar.php"; ?>
 	<main>
 		<?php
 		if (!isset($_SESSION['email']) && !isset($_GET['username'])) {
-			echo ("Either login, or provide a username to view!<br>");
-			echo ("<input type='text' id='noLoginProfile'> <input type='submit' onclick='profileRedirect()'>");
+			echo "Either login, or provide a username to view!<br>";
+			echo "<input type='text' id='noLoginProfile'> <input type='submit' onclick='profileRedirect()'>";
 		} else {
 			?>
 			<div id="confessions-section">
 				<div class="broder-class confessions-broder-class height">
 					<div id="sentConfessions" class="confession-container">
 						<div class="profile-confessions">Sent Confessions</div>
+
 						<div class="main-confession-data">
-							<div style="display: flex; justify-content: space-around; background-color: white; padding: 5px; border-radius: 4px;">
+							<div
+								style="display: flex; justify-content: space-around; background-color: white; padding: 5px; border-radius: 4px;">
 								<div class='username'>User</div>
 								<div class='content'>Confession</div>
 							</div>
 							<?php
-							require ('./mysqlConnection.php');
+							require './mysqlConnection.php';
+
+							// Set the character set and collation for the connection
+							if (!$connection->set_charset("utf8mb4")) {
+								echo "<script>alert('Error loading character set utf8mb4: " . $connection->error . "');</script>";
+								exit();
+							}
+
+							if ($connection->query("SET collation_connection = 'utf8mb4_unicode_ci'") === FALSE) {
+								echo "<script>alert('Error setting collation: " . $connection->error . "');</script>";
+								exit();
+							}
+
 							if (!isset($_GET['username'])) {
-								$userQuery           = "SELECT * FROM users where email='$email'";
+								$userQuery           = "SELECT * FROM users WHERE email='$email'";
 								$userSql             = mysqli_query($connection, $userQuery);
 								$user                = mysqli_fetch_assoc($userSql);
 								$GLOBALS['username'] = $user["username"];
 							} else {
 								$GLOBALS['username'] = $_GET["username"];
 							}
+
 							$username  = $GLOBALS['username'];
-							$confQuery = "SELECT * FROM confessions where usernameBy = '$username'";
+							$confQuery = "SELECT * FROM confessions WHERE usernameBy = '$username'";
 							$confSql   = mysqli_query($connection, $confQuery);
 							if (mysqli_num_rows($confSql) > 0) {
 								while ($row = mysqli_fetch_assoc($confSql)) {
 									$content     = $row['content'];
 									$confessedTo = $row['usernameTo'];
-									echo ("<div class='data-container'><div class='username'>$confessedTo</div><div class='content'>$content</div></div>");
+									echo "<div class='data-container'><div class='username'>$confessedTo</div><div class='content'>$content</div></div>";
 								}
 							} else {
-								echo ("No confessions made by you yet!");
+								echo "No confessions made by you yet!";
 							}
 							?>
 						</div>
 					</div>
 					<div id="receivedConfessions" class="confession-container">
-						<div class="profile-confessions">Recieved Confessions</div>
+						<div class="profile-confessions">Received Confessions</div>
 						<div class="main-confession-data">
-							<div style="display: flex; justify-content: space-around; background-color: white; padding: 5px; border-radius: 4px;">
+							<div
+								style="display: flex; justify-content: space-around; background-color: white; padding: 5px; border-radius: 4px;">
 								<div class='content'>Confession</div>
 								<div class='username'>User</div>
 							</div>
 							<?php
 							if (!isset($_SESSION['email'])) {
-								echo ("<a href='./login.php'>Login</a> to view this part!");
+								echo "<a href='./login.php'>Login</a> to view this part!";
 							} else {
 								$username  = $GLOBALS['username'];
-								$confQuery = "SELECT * FROM confessions where usernameTo = '$username'";
+								$confQuery = "SELECT * FROM confessions WHERE usernameTo = '$username'";
 								$confSql   = mysqli_query($connection, $confQuery);
 								if (mysqli_num_rows($confSql) > 0) {
-									$count = 1;
 									while ($row = mysqli_fetch_assoc($confSql)) {
 										$content     = $row['content'];
 										$confessedBy = $row['usernameBy'];
-										echo ("<div class='data-container'><div class='content'>$content</div><div class='username'>$confessedBy</div></div>");
-										$count++;
+										echo "<div class='data-container'><div class='content'>$content</div><div class='username'>$confessedBy</div></div>";
 									}
 								} else {
-									echo ("No confessions made for you yet!");
+									echo "No confessions made for you yet!";
 								}
 							}
 							?>

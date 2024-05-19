@@ -16,6 +16,16 @@ if ($connection->connect_error) {
   exit();
 }
 
+if (!$connection->set_charset("utf8mb4")) {
+  alert("Error loading character set utf8mb4: " . $connection->error);
+  exit();
+}
+
+if ($connection->query("SET collation_connection = 'utf8mb4_unicode_ci'") === FALSE) {
+  alert("Error setting collation: " . $connection->error);
+  exit();
+}
+
 if (isset($_POST['submit'])) {
   $content = htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8');
   $username = $_SESSION['username'];
@@ -87,4 +97,3 @@ mysqli_close($connection);
   <script src="../javaScript/script.js"></script>
 </body>
 </html>
-
