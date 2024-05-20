@@ -1,10 +1,14 @@
 <?php
+require './mysqlConnection.php';
 session_start();
 
 if (isset($_SESSION['email'])) {
 	$email = $_SESSION['email'];
+    $name= $_SESSION['username'];
 }
 $GLOBALS['username'] = "";
+
+
 
 ?>
 
@@ -46,7 +50,6 @@ $GLOBALS['username'] = "";
 								<div class='content'>Confession</div>
 							</div>
 							<?php
-							require './mysqlConnection.php';
 
 							// Set the character set and collation for the connection
 							if (!$connection->set_charset("utf8mb4")) {
@@ -71,6 +74,7 @@ $GLOBALS['username'] = "";
 							$username  = $GLOBALS['username'];
 							$confQuery = "SELECT * FROM confessions WHERE usernameBy = '$username'";
 							$confSql   = mysqli_query($connection, $confQuery);
+							if($name==$GLOBALS['username']){
 							if (mysqli_num_rows($confSql) > 0) {
 								while ($row = mysqli_fetch_assoc($confSql)) {
 									$content     = $row['content'];
@@ -80,6 +84,9 @@ $GLOBALS['username'] = "";
 							} else {
 								echo "No confessions made by you yet!";
 							}
+						} else {
+							echo "<a href='./login.php'>Login</a> to view this part!";
+						}
 							?>
 						</div>
 					</div>
@@ -95,18 +102,21 @@ $GLOBALS['username'] = "";
 							if (!isset($_SESSION['email'])) {
 								echo "<a href='./login.php'>Login</a> to view this part!";
 							} else {
-								$username  = $GLOBALS['username'];
+								$username = $GLOBALS['username'];
 								$confQuery = "SELECT * FROM confessions WHERE usernameTo = '$username'";
-								$confSql   = mysqli_query($connection, $confQuery);
+								$confSql = mysqli_query($connection, $confQuery);
+								
 								if (mysqli_num_rows($confSql) > 0) {
 									while ($row = mysqli_fetch_assoc($confSql)) {
-										$content     = $row['content'];
+										$content = $row['content'];
 										$confessedBy = $row['usernameBy'];
+										$confessedBy = ($GLOBALS['username'] == $name) ? $confessedBy : 'anon';
 										echo "<div class='data-container'><div class='content'>$content</div><div class='username'>$confessedBy</div></div>";
 									}
 								} else {
 									echo "No confessions made for you yet!";
 								}
+								
 							}
 							?>
 						</div>
