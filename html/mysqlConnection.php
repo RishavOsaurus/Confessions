@@ -26,7 +26,13 @@ COLLATE = utf8mb4_unicode_ci;";
     CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_unicode_ci;";
 
-    if ($connection->query($sqlCreateUsersTable) === FALSE) {
+    $sqlInsertAnonymous = "INSERT INTO users VALUE(
+                'ANONYMOUS',
+                'ANONYMOUS',
+                'ANONYMOUS'
+            )";
+
+    if ($connection->query($sqlCreateUsersTable) === FALSE || $connection->query($sqlInsertAnonymous) === FALSE) {
         die("Error creating table 'users': " . $connection->error);
     }
 
